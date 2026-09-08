@@ -1,87 +1,107 @@
-import { Box, Image, Flex, Button } from "@chakra-ui/react";
+import { useRef, useState } from "react";
+import { Box, Button, Flex, Icon, Text, useToast } from "@chakra-ui/react";
+import { FaPlane } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useToast } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
 
 export default function FlightCard({ data }) {
-  const { id, airline, from, to, departure, arrival, price, totalTime } = data;
+  const navigate = useNavigate();
   const toast = useToast();
+  const busy = useRef(false);
+  const [saving, setSaving] = useState(false);
 
-  const handleClick = () => {
-    axios.post(`http://localhost:8080/flightcart`, data);
-    //   .then((res) => console.log(res))
-    //   .catch((err) => console.log(err))
+  const handleClick = async () => {
+    if (busy.current) return;
+    busy.current = true;
+    setSaving(true);
 
-    toast({
-      title: "Flight Add to Cart",
-      description: "Please Proceed to Payment",
-      status: "success",
-      duration: 9000,
-      isClosable: true,
-    });
-  };
+    try {
+      const { id: flightId, ...flight } = data;
+      const response = await axios.post(
+        "http://localhost:8080/flightcart",
+        {
+          ...flight,
+          flightId,
+          price: Number(flight.price),
+          status: "draft",
+          createdAt: new Date().toISOString()
+        },
+        { timeout: 10000 }
+      );
 
-  
+      if (response.data.id == null) {
+        throw new Error("Missing cart ID");
+      }
 
-  const Booknow = {
-    marginTop: "3%",
-    // width:"164px",
-    padding: "15px",
-    height: "43px",
-    background: "teal",
-    color: " #FFFFFF",
-    bordeRadius: "0.5rem",
-    position: "relative",
-    marginBottom: "1rem",
+      navigate(
+        `/checkout?flightCartId=${encodeURIComponent(response.data.id)}`
+      );
+    } catch {
+      toast({
+        title: "Could not select this flight",
+        description: "Please try again.",
+        status: "error",
+        duration: 5000,
+        isClosable: true
+      });
+    } finally {
+      busy.current = false;
+      setSaving(false);
+    }
   };
 
   return (
-    <Box
-      display={"flex"}
-      gap="20px"
-      key={id}
-      height="100px"
-      width={"80%"}
-      boxShadow="rgba(0, 0, 0, 0.24) 0px 3px 8px"
-      padding="10px"
-      margin="auto"
-      justifyContent="space-around"
-      alignItems={"center"}
-      borderRadius="10px"
-      marginBottom={"20px"}
-      textAlign="center"
+    <Flex
+      gap={6}
+      p={5}
+      mb={4}
+      align="center"
+      justify="space-between"
+      wrap="wrap"
+      bg="white"
+      borderRadius="lg"
+      boxShadow="md"
     >
-      <Box gap={"30px"}>
-        <Image
-          src="https://play-lh.googleusercontent.com/OhZSLjRDLvFLqtDp9bIgcvAweZIg5V5uIMI_7kOaS-9nPR043DUfoibkn1BgwG7Ai1U=w240-h480-rw"
-          width={"35px"}
-          height="30px"
-        />
-        <h1>{airline}</h1>
+      <Box textAlign="center">
+        <Icon as={FaPlane} boxSize={7} color="teal.600" aria-hidden="true" />
+        <Text fontWeight="bold">{data.airline}</Text>
       </Box>
-      <Flex display={"flex"} flexDirection="column">
-        <h3 style={{ fontSize: "10px", fontWeight: "bold" }}>Departure</h3>
-        <h3>{departure}</h3>
-        <b>{from} </b>
-      </Flex>
-      <Flex display={"flex"} flexDirection="column">
-        <h3 style={{ fontSize: "10px", fontWeight: "bold" }}>Arrival</h3>
-        <h3>{arrival}</h3>
-        <b style={{ fontSize: "14px" }}>{to} </b>
-      </Flex>
-      <Flex display={"flex"} flexDirection="column">
-        <h3>Duation</h3>
-        <b>{totalTime}</b>
-      </Flex>
-      <Flex display={"flex"} flexDirection="column">
-        <h3>Price</h3>
-        <b>{price}</b>
-      </Flex>
-      <Link to={"/checkout"}>
-        <Button style={Booknow} onClick={handleClick}>
-          Book Now
-        </Button>
-      </Link>
-    </Box>
+
+      <Box>
+        <Text fontSize="sm">Departure</Text>
+        <Text>{data.departure}</Text>
+        <Text fontWeight="bold">{data.from}</Text>
+      </Box>
+
+      <Box>
+        <Text fontSize="sm">Arrival</Text>
+        <Text>{data.arrival}</Text>
+        <Text fontWeight="bold">{data.to}</Text>
+      </Box>
+
+      <Box>
+        <Text fontSize="sm">Duration</Text>
+        <Text fontWeight="bold">{data.totalTime}</Text>
+      </Box>
+
+      <Box>
+        <Text fontSize="sm">Price per traveler</Text>
+        <Text fontWeight="bold">
+          {Number(data.price).toLocaleString("en-IN", {
+            style: "currency",
+            currency: "INR"
+          })}
+        </Text>
+      </Box>
+
+      <Button
+        colorScheme="teal"
+        onClick={handleClick}
+        isLoading={saving}
+        loadingText="Selecting"
+      >
+        Book Now
+      </Button>
+    </Flex>
   );
 }
