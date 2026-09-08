@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button, useToast } from "@chakra-ui/react";
 import axios from "axios";
 import "./StayData.css";
@@ -10,6 +10,11 @@ import Pagination from "./Pagination";
 const StayData = () => {
   const navigate = useNavigate();
   const toast = useToast();
+  const [searchParams] = useSearchParams();
+
+  const searchCity = searchParams.get("city") || "";
+  const searchCheckIn = searchParams.get("checkIn") || "";
+  const searchCheckOut = searchParams.get("checkOut") || "";
 
   const { data } = useSelector((store) => store.StayReducer);
   const checkInDate = useSelector((state) => state.StayReducer.checkInDate);
@@ -53,8 +58,27 @@ const StayData = () => {
           hotelId,
           price: Number(hotel.price),
           taxes: Number(hotel.taxes || 0),
-          checkInDate: checkInDate || "",
-          checkOutDate: checkOutDate || "",
+          searchCity,
+          checkInDate:
+            searchCheckIn ||
+            (checkInDate
+              ? new Date(
+                  checkInDate.getTime() -
+                    checkInDate.getTimezoneOffset() * 60000
+                )
+                  .toISOString()
+                  .slice(0, 10)
+              : ""),
+          checkOutDate:
+            searchCheckOut ||
+            (checkOutDate
+              ? new Date(
+                  checkOutDate.getTime() -
+                    checkOutDate.getTimezoneOffset() * 60000
+                )
+                  .toISOString()
+                  .slice(0, 10)
+              : ""),
           status: "draft",
           createdAt: new Date().toISOString()
         },

@@ -6,77 +6,90 @@ import PriceSlider from "./PriceSlider";
 
 export const Sidebar = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [order,setOrder] = React.useState("asc");
-  const [sort,setSort] = React.useState("");
+  const [order, setOrder] = React.useState("asc");
+  const [sort, setSort] = React.useState("");
   const dispatch = useDispatch();
 
-const handlePriceChange = (e) => {
-  const selectedOrder = e.target.value;
-  const selectedSort = "price";
-  setOrder(selectedOrder);
-  setSort(selectedSort);
-};
- 
-  const handleRatingChange = (e) => {
-    // setOrder(e.target.value);
+  const updateSortParams = (selectedSort, selectedOrder) => {
+    const params = new URLSearchParams(searchParams);
+
+    params.set("_sort", selectedSort);
+    params.set("_order", selectedOrder);
+
+    setSearchParams(params);
+  };
+
+  const handlePriceChange = (e) => {
     const selectedOrder = e.target.value;
-    const selectedSort = "rating";
+    const selectedSort = "price";
+
     setOrder(selectedOrder);
     setSort(selectedSort);
+    updateSortParams(selectedSort, selectedOrder);
+  };
+
+  const handleRatingChange = (e) => {
+    const selectedOrder = e.target.value;
+    const selectedSort = "rating";
+
+    setOrder(selectedOrder);
+    setSort(selectedSort);
+    updateSortParams(selectedSort, selectedOrder);
   };
 
   React.useEffect(() => {
-    let params = {};
-    sort && (params["_sort"] = sort);
-    order && (params["_order"] = order);
-    setSearchParams(params);
-
-    dispatch(fetchingHotels(sort, order,));
-  }, [sort, order]);
+    dispatch(fetchingHotels(sort, order));
+  }, [sort, order, dispatch]);
 
   return (
     <div>
       <h3>Filter By Price</h3>
-      <div onChange={handlePriceChange} >
+
+      <div onChange={handlePriceChange}>
         <input
           type="radio"
           name="price"
-          value={"asc"}
-         
+          value="asc"
         />
         <label>Low to High</label>
+
         <br />
+
         <input
           type="radio"
           name="price"
-          value={"desc"}
-          
+          value="desc"
         />
         <label>High to Low</label>
       </div>
+
       <br />
       <br />
+
       <h3>Filter By Rating</h3>
+
       <div onChange={handleRatingChange}>
         <input
           type="radio"
           name="rating"
-          value={"asc"}
-         
+          value="asc"
         />
         <label>Low to High</label>
+
         <br />
+
         <input
           type="radio"
           name="rating"
-          value={"desc"}
-          
+          value="desc"
         />
         <label>High to Low</label>
       </div>
-      <br/>
-      <br/>
-      <br/>
+
+      <br />
+      <br />
+      <br />
+
       <div>
         <PriceSlider />
       </div>
