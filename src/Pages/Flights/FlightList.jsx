@@ -4,9 +4,9 @@ import FlightCard from "./FlightCard";
 
 const getData = async (page, priceValue) => {
   let res = await axios.get(
-    `https://makemytrip-api-data.onrender.com/flight?_page=${page}&_limit=5?&price_gte=${
-      priceValue - 2000
-    }&price_lte=${priceValue}`
+    `http://localhost:8080/flight?_page=${page}&_limit=5&price_gte=${
+      Number(priceValue) * 1000 - 1000
+    }&price_lte=${Number(priceValue) * 1000}`
   );
   return res.data;
 };

@@ -66,7 +66,7 @@ console.log(data)
               <h3 className="stay-name">{hotel.name}</h3>
               <button
                 className="stay-left-btn"
-                onClick={() => handleLeft(hotel.id)}
+                disabled
               >
                 We have 5 left
               </button>

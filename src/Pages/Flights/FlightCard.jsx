@@ -8,7 +8,7 @@ export default function FlightCard({ data }) {
   const toast = useToast();
 
   const handleClick = () => {
-    axios.post(`http://localhost:8000/flightcart`, data);
+    axios.post(`http://localhost:8080/flightcart`, data);
     //   .then((res) => console.log(res))
     //   .catch((err) => console.log(err))
 
