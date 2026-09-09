@@ -1,70 +1,88 @@
-import React, { useState } from "react";
+import React from "react";
 import "./PriceSlider.css";
-import StayData from "./StayData";
 
-const PriceSlider = () => {
- const [sliderValues, setSliderValues] = useState({ min: 130, max: 250 });
+const PriceSlider = ({
+  minPrice,
+  maxPrice,
+  onChange
+}) => {
+  const safeMin = Math.min(
+    Number(minPrice) || 0,
+    Number(maxPrice) || 20000
+  );
 
-  const handleSliderChange = (event) => {
-    const { name, value } = event.target;
-    setSliderValues({ ...sliderValues, [name]: parseInt(value, 10) });
-  };
+  const safeMax = Math.max(
+    Number(maxPrice) || 20000,
+    safeMin
+  );
 
-  const formatSliderValue = (value) => `₹${value.toLocaleString()}`;
-
-  
   return (
     <div className="price-range-slider">
       <div
         className="range-bar"
-        style={{ display: "flex", flexDirection: "column" }}
+        style={{
+          display: "flex",
+          flexDirection: "column"
+        }}
       >
-        <div className="slider" style={{ marginBottom: "14%" }}>
+        <div
+          className="slider"
+          style={{ marginBottom: "14%" }}
+        >
           <p>Minimum Price</p>
+
           <input
             type="range"
-            min={130}
-            max={500}
-            name="min"
-            value={sliderValues.min}
-            onChange={handleSliderChange}
+            min="0"
+            max="20000"
+            step="100"
+            value={safeMin}
+            onChange={(event) => {
+              const value = Math.min(
+                Number(event.target.value),
+                safeMax
+              );
+
+              onChange("minPrice", value);
+            }}
             className="slider-input"
           />
+
           <span className="slider-value">
-            {formatSliderValue(sliderValues.min)}
+            ₹{safeMin.toLocaleString("en-IN")}
           </span>
         </div>
+
         <div className="slider">
           <p>Maximum Price</p>
+
           <input
             type="range"
-            min={sliderValues.min}
-            max={10000}
-            name="max"
-            value={sliderValues.max}
-            onChange={handleSliderChange}
+            min="0"
+            max="20000"
+            step="100"
+            value={safeMax}
+            onChange={(event) => {
+              const value = Math.max(
+                Number(event.target.value),
+                safeMin
+              );
+
+              onChange("maxPrice", value);
+            }}
             className="slider-input"
           />
+
           <span className="slider-value">
-            {formatSliderValue(sliderValues.max)}
+            ₹{safeMax.toLocaleString("en-IN")}
           </span>
         </div>
       </div>
+
       <p className="range-text">
-        <input
-          type="text"
-          value={`${formatSliderValue(sliderValues.min)} - ${formatSliderValue(
-            sliderValues.max
-          )}`}
-          style={{
-            backgroundColor: `rgb(240, 230, ${Math.round(
-              (sliderValues.max / 500) * 255
-            )})`,
-            width: "50%",
-          }}
-          readOnly
-          className="range-text-input"
-        />
+        ₹{safeMin.toLocaleString("en-IN")}
+        {" - "}
+        ₹{safeMax.toLocaleString("en-IN")}
       </p>
     </div>
   );

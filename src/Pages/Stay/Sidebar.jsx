@@ -1,102 +1,132 @@
-import React from "react";
 import { useSearchParams } from "react-router-dom";
-import { fetchingHotels } from "../../Redux/StayReducer/action";
-import { useDispatch } from "react-redux";
 import PriceSlider from "./PriceSlider";
 
-export const Sidebar = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+const Sidebar = () => {
+  const [searchParams, setSearchParams] =
+    useSearchParams();
 
-  const place = searchParams.get("place") || "";
+  const sort = searchParams.get("_sort") || "";
+  const order = searchParams.get("_order") || "";
 
-  const [order, setOrder] = React.useState("asc");
-  const [sort, setSort] = React.useState("");
+  const minPrice = Number(
+    searchParams.get("minPrice") || 0
+  );
 
-  const dispatch = useDispatch();
+  const maxPrice = Number(
+    searchParams.get("maxPrice") || 20000
+  );
 
-  const updateSortParams = (selectedSort, selectedOrder) => {
+  const updateParams = (changes) => {
     const params = new URLSearchParams(searchParams);
 
-    params.set("_sort", selectedSort);
-    params.set("_order", selectedOrder);
+    Object.entries(changes).forEach(
+      ([key, value]) => {
+        if (
+          value === "" ||
+          value === null ||
+          value === undefined
+        ) {
+          params.delete(key);
+        } else {
+          params.set(key, String(value));
+        }
+      }
+    );
+
+    params.set("page", "1");
 
     setSearchParams(params);
   };
 
-  const handlePriceChange = (event) => {
-    const selectedOrder = event.target.value;
-    const selectedSort = "price";
-
-    setOrder(selectedOrder);
-    setSort(selectedSort);
-
-    updateSortParams(selectedSort, selectedOrder);
+  const handleSort = (selectedSort, selectedOrder) => {
+    updateParams({
+      _sort: selectedSort,
+      _order: selectedOrder
+    });
   };
-
-  const handleRatingChange = (event) => {
-    const selectedOrder = event.target.value;
-    const selectedSort = "rating";
-
-    setOrder(selectedOrder);
-    setSort(selectedSort);
-
-    updateSortParams(selectedSort, selectedOrder);
-  };
-
-  React.useEffect(() => {
-    dispatch(fetchingHotels(sort, order, 1, place));
-  }, [sort, order, place, dispatch]);
 
   return (
     <div>
       <h3>Filter By Price</h3>
 
-      <div onChange={handlePriceChange}>
+      <label>
         <input
           type="radio"
-          name="price"
-          value="asc"
+          name="priceSort"
+          checked={
+            sort === "price" && order === "asc"
+          }
+          onChange={() =>
+            handleSort("price", "asc")
+          }
         />
-        <label>Low to High</label>
+        Low to High
+      </label>
 
-        <br />
+      <br />
 
+      <label>
         <input
           type="radio"
-          name="price"
-          value="desc"
+          name="priceSort"
+          checked={
+            sort === "price" && order === "desc"
+          }
+          onChange={() =>
+            handleSort("price", "desc")
+          }
         />
-        <label>High to Low</label>
-      </div>
+        High to Low
+      </label>
 
       <br />
       <br />
 
       <h3>Filter By Rating</h3>
 
-      <div onChange={handleRatingChange}>
+      <label>
         <input
           type="radio"
-          name="rating"
-          value="asc"
+          name="ratingSort"
+          checked={
+            sort === "rating" && order === "asc"
+          }
+          onChange={() =>
+            handleSort("rating", "asc")
+          }
         />
-        <label>Low to High</label>
+        Low to High
+      </label>
 
-        <br />
+      <br />
 
+      <label>
         <input
           type="radio"
-          name="rating"
-          value="desc"
+          name="ratingSort"
+          checked={
+            sort === "rating" &&
+            order === "desc"
+          }
+          onChange={() =>
+            handleSort("rating", "desc")
+          }
         />
-        <label>High to Low</label>
-      </div>
+        High to Low
+      </label>
 
       <br />
       <br />
-      <br />
 
-      <PriceSlider />
+      <PriceSlider
+        minPrice={minPrice}
+        maxPrice={maxPrice}
+        onChange={(name, value) =>
+          updateParams({
+            [name]: value
+          })
+        }
+      />
     </div>
   );
 };
