@@ -89,6 +89,26 @@
       "gender": "",
       "marital_status": null,
       "id": 9
+    },
+    {
+      "number": "6505551234",
+      "user_name": "test1",
+      "password": "123456",
+      "email": "",
+      "dob": "",
+      "gender": "",
+      "marital_status": null,
+      "id": 10
+    },
+    {
+      "number": "6505551212",
+      "user_name": "test2",
+      "password": "654321",
+      "email": "",
+      "dob": "",
+      "gender": "",
+      "marital_status": null,
+      "id": 11
     }
   ],
   "hotelcart": [
@@ -129,6 +149,28 @@
       "additional2": "",
       "additional1": "",
       "id": 2
+    },
+    {
+      "image": "https://r1imghtlak.mmtcdn.com/3605cb706f1b11eda4560a58a9feac02.jpg?&output-quality=75&downsize=583:388&crop=583:388;0,10&output-format=webp",
+      "img1": "https://r1imghtlak.mmtcdn.com/3605cb706f1b11eda4560a58a9feac02.jpg?&output-quality=75&downsize=583:388&crop=583:388;0,10&output-format=webp",
+      "img2": "https://r1imghtlak.mmtcdn.com/3626048a6f1b11ed93560a58a9feac02.jpg?&output-quality=75&downsize=583:388&crop=583:388;0,10&output-format=webp",
+      "img3": "https://r1imghtlak.mmtcdn.com/a37332ec6f1b11ed83510a58a9feac02.jpg?&output-quality=75&downsize=583:388&crop=583:388;0,10&output-format=webp",
+      "img4": "https://r1imghtlak.mmtcdn.com/981419d46f1b11edab180a58a9feac02.jpg?&output-quality=75&downsize=583:388&crop=583:388;0,10&output-format=webp",
+      "description": "",
+      "ratingcomment": "Like a 3",
+      "name": "The Hosteller Delhi | Private Rooms & Dorms",
+      "additional": "",
+      "place": "New Friends Colony",
+      "taxes": 151,
+      "price": 1084,
+      "pc__html 5": "1 bedroom | Sleeps 1 guest",
+      "hotelId": 75,
+      "searchPlace": "New Friends Colony",
+      "checkInDate": "2026-09-08",
+      "checkOutDate": "2026-09-09",
+      "status": "draft",
+      "createdAt": "2026-09-09T03:43:38.165Z",
+      "id": 3
     }
   ],
   "flightcart": [
