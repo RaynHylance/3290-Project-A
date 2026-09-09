@@ -6,8 +6,12 @@ import PriceSlider from "./PriceSlider";
 
 export const Sidebar = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+
+  const place = searchParams.get("place") || "";
+
   const [order, setOrder] = React.useState("asc");
   const [sort, setSort] = React.useState("");
+
   const dispatch = useDispatch();
 
   const updateSortParams = (selectedSort, selectedOrder) => {
@@ -19,27 +23,29 @@ export const Sidebar = () => {
     setSearchParams(params);
   };
 
-  const handlePriceChange = (e) => {
-    const selectedOrder = e.target.value;
+  const handlePriceChange = (event) => {
+    const selectedOrder = event.target.value;
     const selectedSort = "price";
 
     setOrder(selectedOrder);
     setSort(selectedSort);
+
     updateSortParams(selectedSort, selectedOrder);
   };
 
-  const handleRatingChange = (e) => {
-    const selectedOrder = e.target.value;
+  const handleRatingChange = (event) => {
+    const selectedOrder = event.target.value;
     const selectedSort = "rating";
 
     setOrder(selectedOrder);
     setSort(selectedSort);
+
     updateSortParams(selectedSort, selectedOrder);
   };
 
   React.useEffect(() => {
-    dispatch(fetchingHotels(sort, order));
-  }, [sort, order, dispatch]);
+    dispatch(fetchingHotels(sort, order, 1, place));
+  }, [sort, order, place, dispatch]);
 
   return (
     <div>
@@ -90,9 +96,7 @@ export const Sidebar = () => {
       <br />
       <br />
 
-      <div>
-        <PriceSlider />
-      </div>
+      <PriceSlider />
     </div>
   );
 };

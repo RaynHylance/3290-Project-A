@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ReactSearchAutocomplete } from "react-search-autocomplete";
-import data from "./city";
 import ShowCalender from "./ShowCalender";
-import { Button, useToast } from "@chakra-ui/react";
+import { Button, Text, useToast } from "@chakra-ui/react";
 import styles from "./Stay.module.css";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { selectCity } from "../../Redux/StayReducer/action";
+import axios from "axios";
 
 const formatLocalDate = (date) => {
   if (!date) return "";
@@ -19,7 +19,9 @@ const formatLocalDate = (date) => {
 };
 
 function Stay() {
-  const [selectedCity, setSelectedCity] = useState("");
+  const [selectedPlace, setSelectedPlace] = useState("");
+  const [destinations, setDestinations] = useState([]);
+  const [destinationError, setDestinationError] = useState("");
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -33,8 +35,54 @@ function Stay() {
     (state) => state.StayReducer.checkOutDate
   );
 
+  useEffect(() => {
+    let active = true;
+
+    axios
+      .get("http://localhost:8080/hotel", {
+        timeout: 10000
+      })
+      .then(({ data }) => {
+        if (!active) return;
+
+        const uniquePlaces = [
+          ...new Set(
+            data
+              .map((hotel) => hotel.place)
+              .filter(
+                (place) =>
+                  typeof place === "string" &&
+                  place.trim().length > 0
+              )
+              .map((place) => place.trim())
+          )
+        ]
+          .sort((a, b) => a.localeCompare(b))
+          .map((name, index) => ({
+            id: index,
+            name
+          }));
+
+        setDestinations(uniquePlaces);
+      })
+      .catch(() => {
+        if (active) {
+          setDestinationError(
+            "Could not load hotel destinations."
+          );
+        }
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
   const handleOnSelect = (item) => {
-    setSelectedCity(item.name);
+    setSelectedPlace(item.name);
+
+    // Keep the existing Redux field populated for compatibility
+    // with the starter project's hotel state.
     dispatch(selectCity(item.name));
   };
 
@@ -47,9 +95,9 @@ function Stay() {
   };
 
   const handleSearch = () => {
-    if (!selectedCity) {
+    if (!selectedPlace) {
       toast({
-        title: "Choose a destination",
+        title: "Choose a destination area",
         status: "warning",
         duration: 3000,
         isClosable: true
@@ -78,7 +126,7 @@ function Stay() {
     }
 
     const params = new URLSearchParams({
-      city: selectedCity,
+      place: selectedPlace,
       checkIn: formatLocalDate(checkInDate),
       checkOut: formatLocalDate(checkOutDate)
     });
@@ -104,11 +152,11 @@ function Stay() {
       >
         <div style={{ width: 400 }}>
           <ReactSearchAutocomplete
-            items={data}
+            items={destinations}
             onSelect={handleOnSelect}
             formatResult={formatResult}
             showIcon={false}
-            placeholder="Going to"
+            placeholder="Going to (area)"
             styling={{
               height: "44px",
               border: "1px solid #dfe1e5",
@@ -123,6 +171,12 @@ function Stay() {
               searchIconMargin: "0 0 0 16px"
             }}
           />
+
+          {destinationError && (
+            <Text mt={2} color="red.500">
+              {destinationError}
+            </Text>
+          )}
         </div>
       </header>
 

@@ -12,7 +12,7 @@ const StayData = () => {
   const toast = useToast();
   const [searchParams] = useSearchParams();
 
-  const searchCity = searchParams.get("city") || "";
+  const searchPlace = searchParams.get("place") || "";
   const searchCheckIn = searchParams.get("checkIn") || "";
   const searchCheckOut = searchParams.get("checkOut") || "";
 
@@ -58,7 +58,7 @@ const StayData = () => {
           hotelId,
           price: Number(hotel.price),
           taxes: Number(hotel.taxes || 0),
-          searchCity,
+          searchPlace,
           checkInDate:
             searchCheckIn ||
             (checkInDate
