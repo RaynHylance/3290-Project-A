@@ -1,89 +1,129 @@
-<h1>Chalo Ghume</h1>
+# Expedia Clone — SE/CprE 3290 Project A
 
-<p>This project is a clone of the Expedia website, created by Team of 5 starting with Kumkum (Team Lead), Ashish, Amit, Sagar Balsaraf, and Sarim . The purpose of this project is to showcase our skills and knowledge in HTML, CSS, JavaScript, React, Redux, and Json-Server.<p>
+This repository contains the Fall 2026 Project A Expedia Clone for Software Project Management.
 
+The project is based on an existing open-source React/Redux Expedia-style application and has been repaired and extended so its major features work locally using React and JSON Server.
 
-<h2>Tech Stack</h2>
+## Features
 
+### User Features
+
+- Landing page
+- Firebase phone/OTP login and registration
+- Hotel search by destination area
+- Hotel check-in and check-out dates
+- Hotel price filtering
+- Hotel price and rating sorting
+- Hotel pagination
+- Hotel booking workflow
+- Flight route searching
+- Flight price filtering
+- Flight booking workflow
+- Shared hotel/flight checkout
+- Persistent demo booking records
+- Cart page for hotel and flight selections
+- Things To Do destination searching
+- Holiday package searching and sorting
+
+### Administrator Features
+
+- Admin dashboard
+- Add flights
+- Add hotels
+- View flight listings
+- View hotel listings
+- View hotel booking requests
+- View flight booking requests
+- View registered users
+- Review booking/cart workflow status
+
+## Tech Stack
+
+- React
+- React Router
+- Redux
+- Redux Thunk
+- Chakra UI
+- Axios
+- Firebase Authentication
+- JSON Server
 - HTML
 - CSS
 - JavaScript
-- React
-- Redux
-- Json-Server
-- firebase
 
+## Local Deployment
 
-<h2>Dependency</h2>
+Requirements:
 
-- axios
-- redux
-- react-redux
-- redux thunk
-- chakraUI
-- firebase
-- font-awesome
-- json-server
-- react-router-dom
-- better-react-carousel
+- Node.js
+- npm
+- Git
 
-<h2>Features</h2>
+Clone the repository:
 
-- Landing Page
-- Login and signup via firebase (OTP).
-- View details of flights, hotels.
-- Search for flights, hotels, and holiday packages
-- Sorting & Filtering and Seraching
-- Book flights, hotels.
-- Cart Section
-- Admin Panel
+    git clone https://github.com/RaynHylance/3290-Project-A.git
+    cd 3290-Project-A
 
-<h2>Installation</h2>
+Install dependencies:
 
-To run this project locally, follow the steps below:
+    npm install
 
-. Clone the repository by running the following command:
-git clone https://github.com/kumkumdutta/interesting-stretch-8935.git
+Start JSON Server in one terminal:
 
-. Navigate to the project directory:
-cd hesitant-river-6235
+    npm run server
 
-. Install the dependencies:
-npm install
+JSON Server runs at:
 
-. Start the server:
-npm start
+    http://localhost:8080
 
-. Start JSON- Server:
-npm run server
+Start React in a second terminal:
 
-. Open the website in your browser:
-http://localhost:3000/
+    npm start
 
+The application runs at:
 
-<h2>Deployment</h2>
+    http://localhost:3000
 
-This project has been deployed using Vercel at the following URL:
+## Production Build
 
-https://interesting-stretch-8935-liart.vercel.app/
+Run:
 
+    npm run build
 
-This is Login and Signup pages:-
-![login](https://user-images.githubusercontent.com/112754519/231046318-135d34cb-0ae7-46c3-851c-6889441c62de.PNG)
+The optimized production files are generated in the build directory.
 
+## Firebase
 
+Firebase is used for phone-number OTP authentication.
 
-This is the Stays Page:-
-![stays](https://user-images.githubusercontent.com/112754519/231046349-d9885d9f-b42d-4d9f-bfc2-0cac0f9a10df.PNG)
+Firebase configuration is located at:
 
+    src/01_firebase/config_firebase.js
 
+Phone authentication and localhost must be authorized in the Firebase project for OTP testing.
 
-This is the Flight Page:-
-![Flight](https://user-images.githubusercontent.com/112754519/231046392-fea5d486-9b26-462c-af9a-5727853e6669.PNG)
+## Local API Resources
 
+- /users
+- /hotel
+- /hotelcart
+- /flight
+- /flightcart
+- /giftcards
+- /Things_todo
 
+## Booking Disclaimer
 
-This is the Admin Page:-
-![Admin](https://user-images.githubusercontent.com/112754519/231046415-c8c2f14c-f586-4da0-884a-992bc18b0e12.PNG)
+Booking and checkout functionality is for a class-project demonstration only.
 
+No payment is collected and no real hotel reservation or airline ticket is created.
 
+## Contributing
+
+See CONTRIBUTING.md for contribution instructions.
+
+## Course
+
+SE/CprE 3290 — Software Project Management
+Fall 2026
+Class Project A — The Prelude Project
