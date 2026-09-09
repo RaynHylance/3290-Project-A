@@ -21,7 +21,7 @@ const initialState = {
 export const StayReducer = (state = initialState, { type, payload }) => {
   switch (type) {
     case SELECTED_DATE_AND_CITY:
-      return { ...state, checkInDate: payload.checkInDate,checkOutDate:payload.checkOutDate, selectedCity: payload.selectedCity };
+      return { ...state, checkInDate: payload.checkInDate, checkOutDate: payload.checkOutDate };
       case SELECTED_CITY:
         return { ...state, selectedCity: payload.selectedCity };
       case HOTEL_REQUEST:

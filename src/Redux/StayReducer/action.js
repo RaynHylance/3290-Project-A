@@ -48,7 +48,7 @@ export const addHotel = (payload) => (dispatch) => {
   dispatch(hotelRequest());
 
   axios
-    .post("https://happy-sunglasses-eel.cyclic.app/hotel", payload) 
+    .post("http://localhost:8080/hotel", payload) 
     .then(() => {
       dispatch(postHotelSuccess());
     })
@@ -57,21 +57,40 @@ export const addHotel = (payload) => (dispatch) => {
     });
 };
 
-//https://happy-sunglasses-eel.cyclic.app/hotel?_sort=asc&_order=price&page=1&_limit=20
-export const fetchingHotels = (sort, order, page) => async (dispatch) => {
-  console.log(order, sort,page);
-  dispatch({ type: HOTEL_REQUEST });
-  try {
-    const res = await axios.get(
-      `https://happy-sunglasses-eel.cyclic.app/hotel?_sort=${sort}&_order=${order}&_page=${page}&_limit=20`
-    );
-    console.log(res.data);
-    dispatch({ type: GET_HOTEL_SUCCESS, payload: res.data });
-  } catch (err) {
-    dispatch({ type: HOTEL_FAILURE });
-    console.log(err);
-  }
-};
+//http://localhost:8080/hotel?_sort=asc&_order=price&page=1&_limit=20
+export const fetchingHotels =
+  (sort, order, page = 1, place = "") =>
+  async (dispatch) => {
+    dispatch({ type: HOTEL_REQUEST });
+
+    try {
+      const params = new URLSearchParams({
+        _page: String(page),
+        _limit: "20"
+      });
+
+      if (sort) {
+        params.set("_sort", sort);
+        params.set("_order", order || "asc");
+      }
+
+      if (place) {
+        params.set("place", place);
+      }
+
+      const res = await axios.get(
+        `http://localhost:8080/hotel?${params.toString()}`
+      );
+
+      dispatch({
+        type: GET_HOTEL_SUCCESS,
+        payload: res.data
+      });
+    } catch (err) {
+      dispatch({ type: HOTEL_FAILURE });
+      console.log(err);
+    }
+  };
 
 
 
@@ -82,7 +101,7 @@ export const fetchingHotels = (sort, order, page) => async (dispatch) => {
 export const DeleteHotel = (deleteId) => async (dispatch) => {
   try {
     const res = await fetch(
-      `https://happy-sunglasses-eel.cyclic.app/hotel/${deleteId}`, 
+      `http://localhost:8080/hotel/${deleteId}`, 
       {
         method: "DELETE",
         headers: {

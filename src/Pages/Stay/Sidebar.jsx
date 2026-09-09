@@ -1,85 +1,132 @@
-import React from "react";
 import { useSearchParams } from "react-router-dom";
-import { fetchingHotels } from "../../Redux/StayReducer/action";
-import { useDispatch } from "react-redux";
 import PriceSlider from "./PriceSlider";
 
-export const Sidebar = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [order,setOrder] = React.useState("asc");
-  const [sort,setSort] = React.useState("");
-  const dispatch = useDispatch();
+const Sidebar = () => {
+  const [searchParams, setSearchParams] =
+    useSearchParams();
 
-const handlePriceChange = (e) => {
-  const selectedOrder = e.target.value;
-  const selectedSort = "price";
-  setOrder(selectedOrder);
-  setSort(selectedSort);
-};
- 
-  const handleRatingChange = (e) => {
-    // setOrder(e.target.value);
-    const selectedOrder = e.target.value;
-    const selectedSort = "rating";
-    setOrder(selectedOrder);
-    setSort(selectedSort);
+  const sort = searchParams.get("_sort") || "";
+  const order = searchParams.get("_order") || "";
+
+  const minPrice = Number(
+    searchParams.get("minPrice") || 0
+  );
+
+  const maxPrice = Number(
+    searchParams.get("maxPrice") || 20000
+  );
+
+  const updateParams = (changes) => {
+    const params = new URLSearchParams(searchParams);
+
+    Object.entries(changes).forEach(
+      ([key, value]) => {
+        if (
+          value === "" ||
+          value === null ||
+          value === undefined
+        ) {
+          params.delete(key);
+        } else {
+          params.set(key, String(value));
+        }
+      }
+    );
+
+    params.set("page", "1");
+
+    setSearchParams(params);
   };
 
-  React.useEffect(() => {
-    let params = {};
-    sort && (params["_sort"] = sort);
-    order && (params["_order"] = order);
-    setSearchParams(params);
-
-    dispatch(fetchingHotels(sort, order,));
-  }, [sort, order]);
+  const handleSort = (selectedSort, selectedOrder) => {
+    updateParams({
+      _sort: selectedSort,
+      _order: selectedOrder
+    });
+  };
 
   return (
     <div>
       <h3>Filter By Price</h3>
-      <div onChange={handlePriceChange} >
+
+      <label>
         <input
           type="radio"
-          name="price"
-          value={"asc"}
-         
+          name="priceSort"
+          checked={
+            sort === "price" && order === "asc"
+          }
+          onChange={() =>
+            handleSort("price", "asc")
+          }
         />
-        <label>Low to High</label>
-        <br />
+        Low to High
+      </label>
+
+      <br />
+
+      <label>
         <input
           type="radio"
-          name="price"
-          value={"desc"}
-          
+          name="priceSort"
+          checked={
+            sort === "price" && order === "desc"
+          }
+          onChange={() =>
+            handleSort("price", "desc")
+          }
         />
-        <label>High to Low</label>
-      </div>
+        High to Low
+      </label>
+
       <br />
       <br />
+
       <h3>Filter By Rating</h3>
-      <div onChange={handleRatingChange}>
+
+      <label>
         <input
           type="radio"
-          name="rating"
-          value={"asc"}
-         
+          name="ratingSort"
+          checked={
+            sort === "rating" && order === "asc"
+          }
+          onChange={() =>
+            handleSort("rating", "asc")
+          }
         />
-        <label>Low to High</label>
-        <br />
+        Low to High
+      </label>
+
+      <br />
+
+      <label>
         <input
           type="radio"
-          name="rating"
-          value={"desc"}
-          
+          name="ratingSort"
+          checked={
+            sort === "rating" &&
+            order === "desc"
+          }
+          onChange={() =>
+            handleSort("rating", "desc")
+          }
         />
-        <label>High to Low</label>
-      </div>
-      <br/>
-      <br/>
-      <br/>
-      <div>
-        <PriceSlider />
-      </div>
+        High to Low
+      </label>
+
+      <br />
+      <br />
+
+      <PriceSlider
+        minPrice={minPrice}
+        maxPrice={maxPrice}
+        onChange={(name, value) =>
+          updateParams({
+            [name]: value
+          })
+        }
+      />
     </div>
   );
 };
