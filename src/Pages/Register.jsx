@@ -80,7 +80,7 @@ export const Register = () => {
   function handleVerifyNumber() {
     document.querySelector("#nextButton").innerText = "Please wait...";
     onCapture();
-    const phoneNumber = `+91${number}`;
+    const phoneNumber = `+1${number}`;
     const appVerifier = window.recaptchaVerifier;
     if (number.length === 10) {
       if (exist) {
@@ -102,9 +102,16 @@ export const Register = () => {
             // ...
           })
           .catch((error) => {
-            // Error; SMS not sent
-            // document.querySelector("#nextButton").innerText = 'Server Error'
-            // ...
+            // Error; SMS not sent. Surface it instead of failing silently --
+            // an empty catch here made every auth failure look like a frozen
+            // button with no explanation.
+            console.error("signInWithPhoneNumber failed:", error);
+            document.querySelector("#loginMesageSuccess").innerHTML = ``;
+            document.querySelector("#loginMesageError").innerHTML =
+              `Could not send the code (${
+                error.code || "unknown error"
+              }). Check the browser console for details.`;
+            document.querySelector("#nextButton").innerText = "Next";
           });
       }
       //
